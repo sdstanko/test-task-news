@@ -1,0 +1,11 @@
+.item {
+	background-color: var(--secondary);
+	color: var(--text)
+
+}
+
+.item__row {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
