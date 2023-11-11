@@ -3,7 +3,7 @@ export const formatSeconds = (second: number): string => {
     const hours = Math.floor(minutes / 60);
 	if (hours === 1) {
 		return `1 hour ago`
-	} else if (hours > 2) {
+	} else if (hours >= 2) {
 		return `${hours} hours ago`
 	} else {
 		return `${minutes} minutes ago`

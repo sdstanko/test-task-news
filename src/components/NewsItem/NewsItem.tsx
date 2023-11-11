@@ -1,32 +1,23 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import styles from './NewsItem.module.css';
-import axios from 'axios';
 import { FC, useEffect } from 'react';
-import { News } from '../../types/news';
 import { formatSeconds } from '../../utils/formatSeconds';
+import { useGetNewsByIdQuery } from '../../services/newsApi';
 
 interface NewsItemProps {
     id: number;
 }
 
 const NewsItem: FC<NewsItemProps> = ({ id }) => {
-    const [item, setItem] = React.useState<News>();
-
-    const getData = async () => {
-        const { data } = await axios.get<News>(
-            `https://hacker-news.firebaseio.com/v0/item/${id}.json`,
-        );
-        setItem(data);
-    };
+    const { data: item, refetch } = useGetNewsByIdQuery(id.toString());
 
     useEffect(() => {
-        getData();
+        refetch();
     }, [id]);
 
     return (
