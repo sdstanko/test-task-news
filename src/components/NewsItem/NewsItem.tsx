@@ -6,32 +6,58 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import styles from './NewsItem.module.css';
+import axios from 'axios';
+import { FC, useEffect } from 'react';
+import { News } from '../../types/news';
+import { formatSeconds } from '../../utils/formatSeconds';
 
-const bull = (
-    <Box component="span" sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}>
-        •
-    </Box>
-);
-
-export default function NewsItem() {
-    return (
-        <Card sx={{ minWidth: 275 }} style={{ color: '#f1faee', backgroundColor: '#1d3557' }}>
-            <CardContent style={{padding: '8px'}}>
-                <Typography variant="h5" component="div">
-                    Braid's long-delayed anniversary edition finally has a release date
-                </Typography>
-                <div className={styles.item__row}>
-                    <Typography sx={{ fontSize: 14 }}>1 point</Typography>
-                    <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
-                        <Typography>by</Typography>
-                        <Typography variant="h6">fjk</Typography>
-                    </div>
-                    <Typography variant="body2">1 minute ago</Typography>
-                </div>
-            </CardContent>
-            <CardActions>
-                <Button size="small">Open</Button>
-            </CardActions>
-        </Card>
-    );
+interface NewsItemProps {
+    id: number;
 }
+
+const NewsItem: FC<NewsItemProps> = ({ id }) => {
+    const [item, setItem] = React.useState<News>();
+
+    const getData = async () => {
+        const { data } = await axios.get<News>(
+            `https://hacker-news.firebaseio.com/v0/item/${id}.json`,
+        );
+        setItem(data);
+    };
+
+    useEffect(() => {
+        getData();
+    }, [id]);
+
+    return (
+        <>
+            {item && (
+                <Card
+                    sx={{ minWidth: 275 }}
+                    style={{ color: '#f1faee', backgroundColor: '#1d3557' }}
+                >
+                    <CardContent style={{ padding: '8px' }}>
+                        <Typography variant="h5" component="div">
+                            {item.title}
+                        </Typography>
+                        <div className={styles.item__row}>
+                            <Typography sx={{ fontSize: 14 }}>{item.score} point</Typography>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <Typography>by</Typography>
+                                <Typography variant="h6">{item.by}</Typography>
+                            </div>
+                            <Typography variant="body2">
+                                {formatSeconds(Date.now() / 1000 - item.time)}
+                            </Typography>
+                        </div>
+                    </CardContent>
+                    <CardActions>
+                        <Button size="small">Open</Button>
+                    </CardActions>
+                </Card>
+            )}
+        </>
+    );
+};
+
+export default NewsItem;

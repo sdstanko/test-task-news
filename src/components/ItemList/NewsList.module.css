@@ -1,5 +1,12 @@
 .list {
 	display: grid;
 	row-gap: 10px;
-	padding: 20px;
+	padding: 20px 0;
+}
+
+.list__button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 20px;
 }
